@@ -1,4 +1,4 @@
-module authentication
+module github.com/pedaobatera/authentication
 
 go 1.21.1
 
