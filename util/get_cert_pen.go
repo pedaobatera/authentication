@@ -5,7 +5,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/pedaobatera/my_authentication/model"
+	"github.com/pedaobatera/monery.packages.my_authentication/model"
 
 	"github.com/form3tech-oss/jwt-go"
 )

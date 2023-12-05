@@ -1,4 +1,4 @@
-module github.com/pedaobatera/my_authentication
+module github.com/pedaobatera/monery.packages.my_authentication
 
 go 1.21.1
 
