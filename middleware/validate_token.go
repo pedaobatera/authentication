@@ -1,10 +1,11 @@
 package middleware
 
 import (
-	"authentication/util"
 	"errors"
 	"net/http"
 	"strings"
+
+	"github.com/pedaobatera/my_authentication/util"
 
 	"github.com/form3tech-oss/jwt-go"
 	"github.com/gofiber/fiber/v2"

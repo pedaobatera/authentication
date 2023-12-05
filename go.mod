@@ -1,9 +1,9 @@
-module github.com/pedaobatera/authentication
+module github.com/pedaobatera/my_authentication
 
 go 1.21.1
 
 require (
-	github.com/gofiber/fiber/v2 v2.51.0
+	github.com/gofiber/fiber/v2 v2.49.2
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 )
 

@@ -1,10 +1,11 @@
 package util
 
 import (
-	"authentication/model"
 	"encoding/json"
 	"errors"
 	"net/http"
+
+	"github.com/pedaobatera/my_authentication/model"
 
 	"github.com/form3tech-oss/jwt-go"
 )
