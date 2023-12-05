@@ -24,10 +24,10 @@ func CheckPermissionsMiddleware(requiredPermissions string) fiber.Handler {
 
 		for _, permission := range permissions {
 			if permission == requiredPermissions {
+				c.Locals("context", context)
+				c.Locals("claims", claims)
+				return c.Next()
 			}
-			c.Locals("context", context)
-			c.Locals("claims", claims)
-			return c.Next()
 		}
 
 		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"message": "You don't have the required permission."})
