@@ -10,14 +10,22 @@ func CheckPermissionsMiddleware(requiredPermissions string) fiber.Handler {
 
 		token, ok := c.Locals("token").(*jwt.Token)
 		if !ok {
-			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"message": "Token missing or not valid."})
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"message": "Token missing or not valid.",
+				"error":   "unauthorized",
+				"code":    fiber.StatusUnauthorized,
+			})
 		}
 
 		claims, ok := token.Claims.(jwt.MapClaims)
 
 		permissions, ok := claims["permissions"].([]interface{})
 		if !ok {
-			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"message": "You don't have the required permission."})
+			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+				"message": "You don't have the required permission.",
+				"error":   "forbidden",
+				"code":    fiber.StatusForbidden,
+			})
 		}
 
 		context, ok := claims["monery-manager/context"].(interface{}).(map[string]interface{})
@@ -30,6 +38,10 @@ func CheckPermissionsMiddleware(requiredPermissions string) fiber.Handler {
 			}
 		}
 
-		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"message": "You don't have the required permission."})
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+			"message": "You don't have the required permission.",
+			"error":   "forbidden",
+			"code":    fiber.StatusForbidden,
+		})
 	}
 }

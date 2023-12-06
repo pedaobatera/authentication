@@ -1,8 +1,6 @@
 package middleware
 
 import (
-	"errors"
-	"net/http"
 	"strings"
 
 	"github.com/pedaobatera/monery.packages.my_authentication/util"
@@ -17,26 +15,40 @@ func ValidateTokenMiddleware(audience string, auth0Domain string) fiber.Handler 
 		// Pegar o token do cabeçalho Authorization
 		authHeader := c.Get("Authorization")
 		if authHeader == "" {
-
-			return c.Status(http.StatusUnauthorized).SendString("Missing authorization header")
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"message": "Missing authorization header",
+				"error":   "unauthorized",
+				"code":    fiber.StatusUnauthorized,
+			})
 		}
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 
 		// Parse e validação do token
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
-				return nil, errors.New("unexpected signing method")
+				return nil, c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+					"message": "unexpected signing method.",
+					"error":   "unauthorized",
+					"code":    fiber.StatusUnauthorized,
+				})
 			}
 			cert, err := util.GetPemCert(token, auth0Domain)
 			if err != nil {
 
-				return nil, c.Status(http.StatusUnauthorized).JSON(err)
-
+				return nil, c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+					"message": "Error getting pem cert.",
+					"error":   "unauthorized",
+					"code":    fiber.StatusUnauthorized,
+				})
 			}
 			return jwt.ParseRSAPublicKeyFromPEM([]byte(cert))
 		})
 		if err != nil {
-			return c.Status(http.StatusUnauthorized).JSON(err)
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"message": "Token not valid.",
+				"error":   "unauthorized",
+				"code":    fiber.StatusUnauthorized,
+			})
 		}
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
@@ -44,13 +56,21 @@ func ValidateTokenMiddleware(audience string, auth0Domain string) fiber.Handler 
 			checkAud := claims.VerifyAudience(aud, false)
 			if !checkAud {
 
-				return c.Status(http.StatusUnauthorized).JSON(err)
+				return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+					"message": "Invalid audience.",
+					"error":   "unauthorized",
+					"code":    fiber.StatusUnauthorized,
+				})
 			}
 			// Continue com o próximo middleware/handler
 			c.Locals("token", token)
 			return c.Next()
 		}
 
-		return c.Status(http.StatusUnauthorized).SendString("Invalid token")
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "Token not valid.",
+			"error":   "unauthorized",
+			"code":    fiber.StatusUnauthorized,
+		})
 	}
 }
