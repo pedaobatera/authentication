@@ -2,10 +2,7 @@ module github.com/pedaobatera/monery.packages.my_authentication
 
 go 1.21.1
 
-require (
-	github.com/gofiber/fiber/v2 v2.49.2
-	github.com/golang-jwt/jwt v3.2.2+incompatible
-)
+require github.com/gofiber/fiber/v2 v2.49.2
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
